@@ -1,0 +1,18 @@
+# Arquivos de ambiente virtual
+.venv/
+venv/
+
+# Arquivos de cache do Python
+__pycache__/
+*.pyc
+
+# Banco de dados local
+db.sqlite3
+
+# Arquivos de cache do Django
+.idea/
+.vscode/
+
+# Logs e arquivos de mídia
+*.log
+media/
