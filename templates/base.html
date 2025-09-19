@@ -2,22 +2,71 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Hora Certa{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Hora Certa - Gestão e Agenda{% endblock %}</title>
     
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    {% block extra_css %}{% endblock %}
+
 </head>
 <body>
+
     <header>
-        <h1>Hora Certa</h1>
+        <div class="container header-container">
+            <h1 class="logo">Hora Certa</h1>
+
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{% url 'finance:finance_list' %}">Finanças</a></li>
+                    <li><a href="{% url 'agenda:eventos_list' %}">Agenda</a></li>
+                </ul>
+            </nav>
+
+            <div class="profile-container">
+                <i class="fas fa-user-circle profile-icon" onclick="toggleDropdown()"></i>
+                <div id="profile-dropdown" class="dropdown-menu">
+                    <ul>
+                        <li><a href="#">Perfil</a></li>
+                        <li><a href="#">Sair</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
     </header>
 
     <main>
-        {% block content %}
-        {% endblock %}
+        <div class="container main-content">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
     <footer>
-        <p>&copy; 2025 Hora Certa. Todos os direitos reservados.</p>
+        <div class="container footer-container">
+            <p>&copy; 2025 Hora Certa. Todos os direitos reservados.</p>
+        </div>
     </footer>
+
+    <script>
+        function toggleDropdown() {
+            document.getElementById('profile-dropdown').classList.toggle('show');
+        }
+        
+        // Esconde o menu se o usuário clicar fora dele
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-icon')) {
+                var dropdowns = document.getElementsByClassName('dropdown-menu');
+                for (var i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+    </script>
 </body>
 </html>

@@ -1,8 +1,9 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
+app_name = 'finance'
+
 urlpatterns = [
-    path('', views.index),
-    path('perfil/', include('accounts.urls')),
-    path('calendario/', include('agenda.urls'))
+    path('', views.index, name='finance_list'), 
+   # path('adicionar/', views.item_create, name='item_create'), 
 ]
