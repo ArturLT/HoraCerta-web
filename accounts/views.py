@@ -23,7 +23,7 @@ def cadastro(request):
 
         user = User.objects.create_user(nome=nome, email=email, senha=senha, nome_empresa=nome_empresa)
         
-        return HttpResponse('Usuario cadastrado com sucesso')
+        return render(request, 'accounts/login.html')
     
 def login(request):
     if request.method == "POST":

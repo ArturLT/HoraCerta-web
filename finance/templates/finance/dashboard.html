@@ -1,8 +1,47 @@
-
 {% extends 'base.html' %}
 
 {% block title %}Dashboard - Finanças{% endblock %}
 
 {% block content %}
-<h2>Bem-vindo ao Dashboard de Finanças</h2>
+<div class="container">
+    <h2>Bem-vindo ao Dashboard de Finanças</h2>
+
+    <a href="{% url 'finance:item_create' %}" class="btn-submit">Adicionar Nova Transação</a>
+
+    <h3>Suas Transações</h3>
+    {% if itens %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Recorrente</th>
+                        <th>Descrição</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens %}
+                    <tr>
+                        <td>R$ {{ item.valor }}</td>
+                        <td>{{ item.data_transacao }}</td>
+                        <td>
+                            {% if item.recorrente %}
+                                Sim
+                            {% else %}
+                                Não
+                            {% endif %}
+                        </td>
+                        <td>{{ item.descricao }}</td>
+                        <td>{{ item.get_tipo_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p>Você ainda não tem nenhuma transação registrada. <a href="{% url 'finance:item_create' %}">Adicione a primeira!</a></p>
+    {% endif %}
+</div>
 {% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar Nova Transação{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <div class="card">
+        <h2>Adicionar Nova Transação</h2>
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                    <ul class="errorlist">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn-submit">Salvar Transação</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

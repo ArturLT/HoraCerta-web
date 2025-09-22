@@ -29,8 +29,8 @@ header {
 
 .header-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 30px;
 }
 
 .logo {
@@ -38,11 +38,16 @@ header {
     margin: 0;
 }
 
+.main-nav {
+    margin-right: auto;
+}
+
 .main-nav ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
+    gap: 15px;
 }
 
 .main-nav a {
@@ -60,7 +65,7 @@ header {
 
 main {
     padding: 2rem 0;
-    min-height: calc(100vh - 120px); /* Ajusta a altura para o rodapé ficar no final */
+    min-height: calc(100vh - 120px);
 }
 
 footer {
@@ -69,33 +74,6 @@ footer {
     text-align: center;
     padding: 1rem 0;
     margin-top: 2rem;
-}
-
-/* ... (Mantenha as regras anteriores) ... */
-
-.header-container {
-    /* Mudamos de space-between para flex, para controlar o espaçamento */
-    display: flex;
-    align-items: center;
-    gap: 30px; /* Adiciona um espaço fixo de 30px entre o logo e a navegação */
-}
-
-.logo {
-    font-size: 1.5rem;
-    margin: 0;
-}
-
-.main-nav {
-    /* Ocupa o espaço restante */
-    margin-right: auto;
-}
-
-.main-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 15px; /* Adiciona um espaço entre os links */
 }
 
 .profile-container {
@@ -114,7 +92,7 @@ footer {
 }
 
 .dropdown-menu {
-    display: none; /* Escondido por padrão */
+    display: none;
     position: absolute;
     top: 100%;
     right: 0;
@@ -127,7 +105,7 @@ footer {
 }
 
 .dropdown-menu.show {
-    display: block; /* Mostra o menu quando a classe 'show' é adicionada */
+    display: block;
 }
 
 .dropdown-menu ul {
@@ -146,4 +124,68 @@ footer {
 
 .dropdown-menu a:hover {
     background-color: var(--background-light);
+}
+
+/* --- Estilos para o formulário de login e cadastro --- */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px);
+}
+.card {
+    background-color: #ffffff;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+.card h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+.form-group {
+    margin-bottom: 1rem;
+    text-align: left;
+}
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+.btn-submit {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 1rem;
+}
+.btn-submit:hover {
+    background-color: #0056b3;
+}
+.switch-auth {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+.switch-auth a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
 }
