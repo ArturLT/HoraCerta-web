@@ -34,7 +34,6 @@ def login(request):
         
         if usuario is not None:
             django_login(request, usuario)
-            # CORREÇÃO: Mude 'dashboard' para 'finance_list'
             return redirect(reverse('finance:finance_list'))
         else:
             return HttpResponse("Usuário ou senha inválidos.")

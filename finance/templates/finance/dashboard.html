@@ -4,44 +4,97 @@
 
 {% block content %}
 <div class="container">
-    <h2>Bem-vindo ao Dashboard de Finanças</h2>
+    <h2>Resumo Financeiro</h2>
 
-    <a href="{% url 'finance:item_create' %}" class="btn-submit">Adicionar Nova Transação</a>
-
-    <h3>Suas Transações</h3>
-    {% if itens %}
-        <div class="table-responsive">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Valor</th>
-                        <th>Data</th>
-                        <th>Recorrente</th>
-                        <th>Descrição</th>
-                        <th>Tipo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in itens %}
-                    <tr>
-                        <td>R$ {{ item.valor }}</td>
-                        <td>{{ item.data_transacao }}</td>
-                        <td>
-                            {% if item.recorrente %}
-                                Sim
-                            {% else %}
-                                Não
-                            {% endif %}
-                        </td>
-                        <td>{{ item.descricao }}</td>
-                        <td>{{ item.get_tipo_display }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="dashboard-header">
+        <a href="{% url 'finance:item_create' %}" class="btn-submit">Adicionar Nova Transação</a>
+        
+        <div class="view-toggles">
+            <span class="label">Visualização:</span>
+            
+            {# Botões para filtros Semanal, Mensal e Anual #}
+            {# 'finance:finance_list' deve ser o nome da URL que aponta para a sua view index #}
+            <a href="{% url 'finance:finance_list' %}?view=semanal" 
+               class="btn-toggle {% if current_view == 'semanal' %}active{% endif %}">Semanal</a>
+               
+            <a href="{% url 'finance:finance_list' %}?view=mensal" 
+               class="btn-toggle {% if current_view == 'mensal' %}active{% endif %}">Mensal</a>
+               
+            <a href="{% url 'finance:finance_list' %}?view=anual" 
+               class="btn-toggle {% if current_view == 'anual' %}active{% endif %}">Anual</a>
         </div>
-    {% else %}
-        <p>Você ainda não tem nenhuma transação registrada. <a href="{% url 'finance:item_create' %}">Adicione a primeira!</a></p>
-    {% endif %}
+    </div>
+
+    <section class="financial-summary">
+        <div class="summary-card receita">
+            <h4>Total de Receitas (Período)</h4>
+            <p class="value">R$ {{ receitas|floatformat:2 }}</p>
+        </div>
+        <div class="summary-card despesa">
+            <h4>Total de Despesas (Período)</h4>
+            <p class="value">R$ {{ despesas|floatformat:2 }}</p>
+        </div>
+        <div class="summary-card saldo">
+            <h4>Saldo Líquido (Período)</h4>
+            <p class="value">R$ {{ saldo|floatformat:2 }}</p>
+        </div>
+    </section>
+    
+    <hr>
+
+    <section class="transaction-history">
+        <h3>Histórico de Transações</h3>
+        
+        <div class="filter-controls">
+            <form method="get" action="{% url 'finance:finance_list' %}" class="form-filter">
+                <label for="filter_month">Filtrar por Período Específico:</label>
+                
+                {# Lembre-se: As opções abaixo devem ser geradas dinamicamente na sua view #}
+                <select name="filter_month" id="filter_month" class="form-control">
+                    <option value="todos" {% if current_period == 'todos' %}selected{% endif %}>Todos os Meses</option>
+                    <option value="09-2025" {% if current_period == '09-2025' %}selected{% endif %}>Setembro/2025</option>
+                    <option value="08-2025" {% if current_period == '08-2025' %}selected{% endif %}>Agosto/2025</option>
+                </select>
+                
+                <button type="submit" class="btn-submit small">Filtrar</button>
+            </form>
+        </div>
+        
+        {% if itens %}
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Valor</th>
+                            <th>Data</th>
+                            <th>Recorrente</th>
+                            <th>Descrição</th>
+                            <th>Tipo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in itens %}
+                        <tr>
+                            <td>R$ {{ item.valor|floatformat:2 }}</td>
+                            <td>{{ item.data_transacao }}</td>
+                            <td>
+                                {% if item.recorrente %}
+                                    {# Usa as classes badge success/default #}
+                                    <span class="badge success">Sim</span>
+                                {% else %}
+                                    <span class="badge default">Não</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ item.descricao }}</td>
+                            <td>{{ item.get_tipo_display }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p>Não há transações registradas para o período selecionado. <a href="{% url 'finance:item_create' %}">Adicione a primeira!</a></p>
+        {% endif %}
+    </section>
 </div>
 {% endblock %}
