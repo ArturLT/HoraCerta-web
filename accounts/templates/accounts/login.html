@@ -8,6 +8,12 @@
         <h2>Login</h2>
         <form action="{% url 'accounts:login' %}" method="POST">
             {% csrf_token %}
+<<<<<<< HEAD
+=======
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+>>>>>>> a7a9e1c (Authenticação de Login)
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Nome ou E-mail" name="identificador" required>
             </div>
