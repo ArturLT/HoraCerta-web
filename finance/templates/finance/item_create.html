@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Criar Nova Transação{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'finance/css/dashboard.css' %}">
+{% endblock%}
 
 {% block content %}
 <div class="form-container">

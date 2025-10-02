@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Dashboard - Finanças{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'finance/css/dashboard.css' %}">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'finance/js/charts.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderiza_despesas_mensal("{% url 'finance:relatorio' %}");
+    });
+</script>
+{% endblock %}
 
 {% block content %}
 <div class="container">
@@ -8,20 +23,11 @@
 
     <div class="dashboard-header">
         <a href="{% url 'finance:item_create' %}" class="btn-submit">Adicionar Nova Transação</a>
-        
         <div class="view-toggles">
             <span class="label">Visualização:</span>
-            
-            {# Botões para filtros Semanal, Mensal e Anual #}
-            {# 'finance:finance_list' deve ser o nome da URL que aponta para a sua view index #}
-            <a href="{% url 'finance:finance_list' %}?view=semanal" 
-               class="btn-toggle {% if current_view == 'semanal' %}active{% endif %}">Semanal</a>
-               
-            <a href="{% url 'finance:finance_list' %}?view=mensal" 
-               class="btn-toggle {% if current_view == 'mensal' %}active{% endif %}">Mensal</a>
-               
-            <a href="{% url 'finance:finance_list' %}?view=anual" 
-               class="btn-toggle {% if current_view == 'anual' %}active{% endif %}">Anual</a>
+            <a href="{% url 'finance:finance_list' %}?view=semanal" class="btn-toggle {% if current_view == 'semanal' %}active{% endif %}">Semanal</a>
+            <a href="{% url 'finance:finance_list' %}?view=mensal" class="btn-toggle {% if current_view == 'mensal' %}active{% endif %}">Mensal</a>
+            <a href="{% url 'finance:finance_list' %}?view=anual" class="btn-toggle {% if current_view == 'anual' %}active{% endif %}">Anual</a>
         </div>
     </div>
 
@@ -39,61 +45,58 @@
             <p class="value">R$ {{ saldo|floatformat:2 }}</p>
         </div>
     </section>
-    
+
     <hr>
 
     <section class="transaction-history">
         <h3>Histórico de Transações</h3>
-        
+        <canvas id="faturamento" width="600" height="300"></canvas>
+
         <div class="filter-controls">
             <form method="get" action="{% url 'finance:finance_list' %}" class="form-filter">
                 <label for="filter_month">Filtrar por Período Específico:</label>
-                
-                {# Lembre-se: As opções abaixo devem ser geradas dinamicamente na sua view #}
                 <select name="filter_month" id="filter_month" class="form-control">
                     <option value="todos" {% if current_period == 'todos' %}selected{% endif %}>Todos os Meses</option>
                     <option value="09-2025" {% if current_period == '09-2025' %}selected{% endif %}>Setembro/2025</option>
                     <option value="08-2025" {% if current_period == '08-2025' %}selected{% endif %}>Agosto/2025</option>
                 </select>
-                
                 <button type="submit" class="btn-submit small">Filtrar</button>
             </form>
         </div>
-        
+
         {% if itens %}
-            <div class="table-responsive">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Valor</th>
-                            <th>Data</th>
-                            <th>Recorrente</th>
-                            <th>Descrição</th>
-                            <th>Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in itens %}
-                        <tr>
-                            <td>R$ {{ item.valor|floatformat:2 }}</td>
-                            <td>{{ item.data_transacao }}</td>
-                            <td>
-                                {% if item.recorrente %}
-                                    {# Usa as classes badge success/default #}
-                                    <span class="badge success">Sim</span>
-                                {% else %}
-                                    <span class="badge default">Não</span>
-                                {% endif %}
-                            </td>
-                            <td>{{ item.descricao }}</td>
-                            <td>{{ item.get_tipo_display }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="table-responsive">
+            <table>
+                <thead class="table-header">
+                    <tr>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Recorrente</th>
+                        <th>Descrição</th>
+                        <th>Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens %}
+                    <tr>
+                        <td>R$ {{ item.valor|floatformat:2 }}</td>
+                        <td>{{ item.data_transacao }}</td>
+                        <td>
+                            {% if item.recorrente %}
+                                <span class="badge success">Sim</span>
+                            {% else %}
+                                <span class="badge default">Não</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.descricao }}</td>
+                        <td>{{ item.get_tipo_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
         {% else %}
-            <p>Não há transações registradas para o período selecionado. <a href="{% url 'finance:item_create' %}">Adicione a primeira!</a></p>
+        <p>Não há transações registradas para o período selecionado. <a href="{% url 'finance:item_create' %}">Adicione a primeira!</a></p>
         {% endif %}
     </section>
 </div>

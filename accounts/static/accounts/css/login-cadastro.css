@@ -1,0 +1,72 @@
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh;
+}
+
+.card {
+    background-color: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.card h2 {
+    margin-bottom: 30px;
+    color: #2c3e50;
+}
+
+/* Campos do formulário */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #1abc9c;
+    outline: none;
+}
+
+/* Botão de login */
+.btn-submit {
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #16a085;
+}
+
+/* Link de cadastro */
+.switch-auth {
+    margin-top: 20px;
+    font-size: 0.95rem;
+}
+
+.switch-auth a {
+    color: #1abc9c;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.switch-auth a:hover {
+    text-decoration: underline;
+}
