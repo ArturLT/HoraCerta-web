@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Finanças - Transações{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'finance/css/finance-list.css' %}">
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'finance/js/charts.js' %}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderiza_despesas_mensal("{% url 'finance:relatorio' %}");
+    });
+</script>
+{% endblock %}
+
+{% block breadcrumb %}
+<nav class="breadcrumb">
+    <a href="{% url 'finance:dashboard' %}">Dashboard</a>
+    <span>/</span>
+    <span>Transações</span>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="finance-container">
+     Header Section 
+    <div class="finance-header">
+        <div class="header-content">
+            <div class="header-title">
+                <svg class="header-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                <div>
+                    <h1>Transações Financeiras</h1>
+                    <p class="subtitle">Gerencie suas receitas e despesas</p>
+                </div>
+            </div>
+            <a href="{% url 'finance:item_create' %}" class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Nova Transação
+            </a>
+        </div>
+    </div>
+
+     Filter Section 
+    <div class="filter-section">
+        <form method="get" action="{% url 'finance:finance_list' %}" class="filter-form">
+            <div class="filter-group">
+                <label for="filter_month">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                        <path d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                    Período
+                </label>
+                <select name="filter_month" id="filter_month" class="filter-select">
+                    <option value="todos" {% if current_period == 'todos' %}selected{% endif %}>Todos os Meses</option>
+                     Adicione mais opções de meses aqui 
+                </select>
+            </div>
+            <button type="submit" class="btn-filter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
+                </svg>
+                Filtrar
+            </button>
+        </form>
+    </div>
+
+     Transactions Table 
+    {% if itens %}
+    <div class="transactions-section">
+        <div class="table-container">
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Tipo</th>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Recorrente</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in itens %}
+                    <tr class="transaction-row">
+                        <td>
+                            <span class="type-badge type-{{ item.tipo }}">
+                                {% if item.tipo == 'receita' %}
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 5v14M19 12l-7 7-7-7"/>
+                                    </svg>
+                                    Receita
+                                {% else %}
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 19V5M5 12l7-7 7 7"/>
+                                    </svg>
+                                    Despesa
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td class="description">{{ item.descricao }}</td>
+                        <td class="value value-{{ item.tipo }}">
+                            {% if item.tipo == 'receita' %}+{% else %}-{% endif %}
+                            R$ {{ item.valor|floatformat:2 }}
+                        </td>
+                        <td class="date">{{ item.data_transacao|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if item.recorrente %}
+                                <span class="badge badge-success">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                        <polyline points="22 4 12 14.01 9 11.01"/>
+                                    </svg>
+                                    Sim
+                                </span>
+                            {% else %}
+                                <span class="badge badge-default">Não</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon btn-edit" title="Editar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                    </svg>
+                                </button>
+                                <button class="btn-icon btn-delete" title="Excluir">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M16 16s-1.5-2-4-2-4 2-4 2"/>
+            <line x1="9" y1="9" x2="9.01" y2="9"/>
+            <line x1="15" y1="9" x2="15.01" y2="9"/>
+        </svg>
+        <h3>Nenhuma transação encontrada</h3>
+        <p>Não há transações registradas para o período selecionado.</p>
+        <a href="{% url 'finance:item_create' %}" class="btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 5v14M5 12h14"/>
+            </svg>
+            Adicionar Primeira Transação
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

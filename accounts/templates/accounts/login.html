@@ -4,30 +4,139 @@
 {% block title %}Login{% endblock %}
 
 {% block extra_style %}
-<link rel = "stylesheet" href="{% static 'accounts/css/login-cadastro.css'%}">
+<link rel="stylesheet" href="{% static 'accounts/css/login.css' %}">
 {% endblock %}
 
 {% block content %}
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+            </div>
+            <h2>Bem-vindo de volta</h2>
+            <p>Entre com suas credenciais para continuar</p>
+        </div>
 
-<div class="form-container">
-    <div class="card">
-        <h2>Login</h2>
-        <form action="{% url 'accounts:login' %}" method="POST">
+        {% if error %}
+        <div class="error-alert">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        <form action="{% url 'accounts:login' %}" method="POST" class="login-form" id="loginForm">
             {% csrf_token %}
-            {% if error %}
-            <div class="error-message">{{ error }}</div>
-            {% endif %}
+            
             <div class="form-group">
-                <input type="text" class="form-control" placeholder="Nome ou E-mail" name="identificador" required>
+                <label for="identificador">Nome de usuário ou E-mail</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="identificador"
+                        name="identificador" 
+                        class="form-control" 
+                        placeholder="Digite seu nome ou e-mail"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
             </div>
+
             <div class="form-group">
-                <input type="password" class="form-control" placeholder="Senha" name="senha" required>
+                <label for="senha">Senha</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                    <input 
+                        type="password" 
+                        id="senha"
+                        name="senha" 
+                        class="form-control" 
+                        placeholder="Digite sua senha"
+                        required
+                        autocomplete="current-password"
+                    >
+                    <button type="button" class="toggle-password" id="togglePassword">
+                        <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <button type="submit" class="btn-submit">Login</button>
+
+            <div class="form-options">
+                <label class="remember-me">
+                    <input type="checkbox" name="remember" id="remember">
+                    <span>Lembrar-me</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <span class="btn-text">Entrar</span>
+                <span class="btn-loader"></span>
+            </button>
         </form>
-        <div class="switch-auth">
-            Ainda não tem uma conta? <a href="{% url 'accounts:cadastro' %}">Cadastre-se</a>
+
+        <div class="cadastro-link">
+            Ainda não tem uma conta? <a href="{% url 'accounts:cadastro' %}">Cadastre-se gratuitamente</a>
         </div>
     </div>
 </div>
+
+<script>
+    // Toggle password visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const senhaInput = document.getElementById('senha');
+    
+    togglePassword.addEventListener('click', function() {
+        const type = senhaInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        senhaInput.setAttribute('type', type);
+        this.classList.toggle('active');
+    });
+
+    // Form validation
+    const loginForm = document.getElementById('loginForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    loginForm.addEventListener('submit', function(e) {
+        const identificador = document.getElementById('identificador').value.trim();
+        const senha = document.getElementById('senha').value;
+        
+        if (!identificador || !senha) {
+            e.preventDefault();
+            return;
+        }
+        
+        // Show loading state
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+    });
+
+    // Input focus effects
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.closest('.input-wrapper').classList.add('focused');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.closest('.input-wrapper').classList.remove('focused');
+            if (this.value.trim() !== '') {
+                this.classList.add('filled');
+            } else {
+                this.classList.remove('filled');
+            }
+        });
+    });
+</script>
 {% endblock %}

@@ -5,51 +5,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Hora Certa{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#64748b',
+                        accent: '#0ea5e9',
+                        background: '#f8fafc',
+                        surface: '#ffffff',
+                        border: '#e2e8f0',
+                    }
+                }
+            }
+        }
+    </script>
     {% block extra_style %}{% endblock %}
-    {% block extra_scripts %}{% endblock %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
-
 </head>
-<body>
-    <header>
-        <div class="container header-container">
-            <h1 class="logo">Hora Certa</h1>
-            <nav class="main-nav">
-                <ul>
-                    {% comment %} Links de navegação aqui {% endcomment %}
-                    <li><a href="{% url 'finance:finance_list' %}">Finanças</a></li>
-                    <li><a href="{% url 'accounts:cadastro' %}">Cadastro</a></li>
-                    <li><a href="{% url 'accounts:login' %}">Login</a></li>
+<body class="bg-background min-h-screen">
+     Sidebar 
+    <aside id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-surface border-r border-border transition-transform duration-300 z-40">
+        <div class="flex flex-col h-full">
+              
+            <div class="flex items-center gap-3 px-6 py-5 border-b border-border">
+                <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-xl font-bold text-gray-900">Hora Certa</h1>
+            </div>
+
+              
+            <nav class="flex-1 px-4 py-6 overflow-y-auto">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{% url 'finance:Dashboard' %}" class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'finance:finance_list' %}" class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span class="font-medium">Finanças</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:cadastro' %}" class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                            </svg>
+                            <span class="font-medium">Cadastro</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'accounts:login' %}" class="flex items-center gap-3 px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                            </svg>
+                            <span class="font-medium">Login</span>
+                        </a>
+                    </li>
                 </ul>
             </nav>
-            <div class="profile-container">
-                <span class="profile-icon">👤</span>
-                <div class="dropdown-menu">
-                    <ul>
-                        <li><a href="#">Meu Perfil</a></li>
-                        <li><a href="#">Configurações</a></li>
-                        <li><a href="#">Sair</a></li>
-                    </ul>
+
+            <div class="px-4 py-4 border-t border-border">
+                <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 rounded-lg">
+                    <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-semibold">
+                        U
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-gray-900 truncate">Usuário</p>
+                        <p class="text-xs text-gray-500 truncate">usuario@email.com</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </header>
-    
-    <main>
-        <div class="container">
+    </aside>
+
+    <div class="ml-64 min-h-screen flex flex-col">
+         
+
+           
+        
             {% block content %}
             {% endblock %}
-        </div>
-    </main>
 
-    <footer>
+ 
+        <footer class="bg-surface border-t border-border mt-auto">
+            <div class="px-8 py-6">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p class="text-sm text-gray-600">
+                        &copy; 2025 Hora Certa. Todos os direitos reservados.
+                    </p>
+                    <div class="flex items-center gap-6 text-sm text-gray-600">
+                        <a href="#" class="hover:text-primary transition-colors">Termos de Uso</a>
+                        <a href="#" class="hover:text-primary transition-colors">Privacidade</a>
+                        <a href="#" class="hover:text-primary transition-colors">Suporte</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
 
-        <div class="container">
+    <script>
+        // Profile Dropdown Toggle
+        const profileBtn = document.getElementById('profile-btn');
+        const profileDropdown = document.getElementById('profile-dropdown');
+        
+        profileBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('hidden');
+        });
 
-        <div class="rodape">
-            <p>&copy; 2025 Hora Certa. Todos os direitos reservados.</p>
-        </div>
-    </footer>
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            profileDropdown?.classList.add('hidden');
+        });
+    </script>
+
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

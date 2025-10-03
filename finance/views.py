@@ -9,6 +9,24 @@ from django.http import JsonResponse
 
 
 @login_required
+def Dashboard(request):
+    receitas_queryset = Item.objects.all().filter(tipo='receita')
+    despesas_queryset = Item.objects.all().filter(tipo='despesa')
+
+    total_receitas = receitas_queryset.aggregate(Sum('valor'))['valor__sum'] or 0
+    total_despesas = despesas_queryset.aggregate(Sum('valor'))['valor__sum'] or 0
+    
+    
+    saldo = total_receitas - total_despesas
+
+    context ={
+        'receitas': total_receitas, 
+        'despesas': total_despesas, 
+        'saldo': saldo,
+    }
+    return render(request, 'finance/Dashboard.html', context)
+
+@login_required
 def total_despesas_receitas(request):
     total_receita = Item.objects.all().filter(tipo='receita')
     total_despesas = Item.objects.all().filter(tipo='despesa')
@@ -24,7 +42,7 @@ def Filtragem(request):
     usuario_logado = request.user
     base_queryset = Item.objects.filter(usuario=usuario_logado).order_by('data_transacao')
     
-    view_filter = request.GET.get('view', 'mensal')
+    view_filter = request.GET.get('view', 'todos')
     period_filter = request.GET.get('filter_month')
 
     data_inicio = None
@@ -44,24 +62,14 @@ def Filtragem(request):
             )
         else:
             itens_filtrados = base_queryset
-    
-    receitas_queryset = itens_filtrados.filter(tipo='receita')
-    despesas_queryset = itens_filtrados.filter(tipo='despesa')
-
-    total_receitas = receitas_queryset.aggregate(Sum('valor'))['valor__sum'] or 0
-    total_despesas = despesas_queryset.aggregate(Sum('valor'))['valor__sum'] or 0
-    
-    saldo = total_receitas - total_despesas
+   
 
     context = {
         'itens': itens_filtrados,
-        'receitas': total_receitas, 
-        'despesas': total_despesas, 
-        'saldo': saldo,
         'current_view': view_filter,
-        'current_period': period_filter or 'todos',
+        'current_period': 'todos' or period_filter,
     }
-    return render(request, 'finance/dashboard.html', context)
+    return render(request, 'finance/Receita_Despesas.html', context)
 
 
 @login_required
