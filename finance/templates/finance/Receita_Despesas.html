@@ -27,7 +27,6 @@
 
 {% block content %}
 <div class="finance-container">
-     Header Section 
     <div class="finance-header">
         <div class="header-content">
             <div class="header-title">
@@ -48,7 +47,7 @@
         </div>
     </div>
 
-     Filter Section 
+       
     <div class="filter-section">
         <form method="get" action="{% url 'finance:finance_list' %}" class="filter-form">
             <div class="filter-group">
@@ -61,8 +60,21 @@
                 </label>
                 <select name="filter_month" id="filter_month" class="filter-select">
                     <option value="todos" {% if current_period == 'todos' %}selected{% endif %}>Todos os Meses</option>
-                     Adicione mais opções de meses aqui 
+
+                    <option value="01-2025" {% if current_period == '01-2025' %}selected{% endif %}>Janeiro 2025</option>
+                    <option value="02-2025" {% if current_period == '02-2025' %}selected{% endif %}>Fevereiro 2025</option>
+                    <option value="03-2025" {% if current_period == '03-2025' %}selected{% endif %}>Março 2025</option>
+                    <option value="04-2025" {% if current_period == '04-2025' %}selected{% endif %}>Abril 2025</option>
+                    <option value="05-2025" {% if current_period == '05-2025' %}selected{% endif %}>Maio 2025</option>
+                    <option value="06-2025" {% if current_period == '06-2025' %}selected{% endif %}>Junho 2025</option>
+                    <option value="07-2025" {% if current_period == '07-2025' %}selected{% endif %}>Julho 2025</option>
+                    <option value="08-2025" {% if current_period == '08-2025' %}selected{% endif %}>Agosto 2025</option>
+                    <option value="09-2025" {% if current_period == '09-2025' %}selected{% endif %}>Setembro 2025</option>
+                    <option value="10-2025" {% if current_period == '10-2025' %}selected{% endif %}>Outubro 2025</option>
+                    <option value="11-2025" {% if current_period == '11-2025' %}selected{% endif %}>Novembro 2025</option>
+                    <option value="12-2025" {% if current_period == '12-2025' %}selected{% endif %}>Dezembro 2025</option>
                 </select>
+
             </div>
             <button type="submit" class="btn-filter">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -73,7 +85,6 @@
         </form>
     </div>
 
-     Transactions Table 
     {% if itens %}
     <div class="transactions-section">
         <div class="table-container">

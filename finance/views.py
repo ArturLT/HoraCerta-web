@@ -42,13 +42,13 @@ def Filtragem(request):
     usuario_logado = request.user
     base_queryset = Item.objects.filter(usuario=usuario_logado).order_by('data_transacao')
     
-    view_filter = request.GET.get('view', 'todos')
+    view_filter = request.GET.get('view', 'meses')
     period_filter = request.GET.get('filter_month')
 
     data_inicio = None
     data_fim = None
 
-    if period_filter == 'todos':
+    if not period_filter or period_filter == 'todos':
         itens_filtrados = base_queryset
     else:
         if period_filter:
