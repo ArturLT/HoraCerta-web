@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Itens Alugáveis{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'items/css/aluguel_list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="aluguel-page">
+      
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-left">
+                <div class="header-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
+                        <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
+                        <path d="M12 3v6"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="page-title">Itens Alugáveis</h1>
+                    <p class="page-subtitle">Gerencie seus itens disponíveis para aluguel</p>
+                </div>
+            </div>
+            <a href="{% url 'items:criar_item' %}" class="btn-add">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Adicionar Item
+            </a>
+        </div>
+    </div>
+
+    <div class="table-container">
+        {% if itens %}
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th>Nome do Item</th>
+                    <th>Quantidade Total</th>
+                    <th>Valor da Diária</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in itens %}
+                <tr>
+                    <td>
+                        <div class="item-name">
+                            <div class="item-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                    <path d="M9 3v18"/>
+                                </svg>
+                            </div>
+                            <span>{{ item.nome }}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <span class="quantity-badge total">{{ item.quantidade_total }}</span>
+                    </td>
+                    <td>
+                        <span class="price">R$ {{ item.diaria|floatformat:2 }}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="" class="btn-action btn-edit" title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                                </svg>
+                            </a>
+                            <a href="" class="btn-action btn-delete" title="Excluir" onclick="return confirm('Tem certeza que deseja excluir este item?')">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M3 6h18M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
+                    <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
+                    <path d="M12 3v6"/>
+                </svg>
+            </div>
+            <h3>Nenhum item cadastrado</h3>
+            <p>Comece adicionando seu primeiro item alugável</p>
+            <a href="{% url 'items:criar_item' %}" class="btn-empty-action">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+                Adicionar Primeiro Item
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

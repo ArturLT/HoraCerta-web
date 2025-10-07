@@ -2,8 +2,9 @@ from django.shortcuts import render, redirect
 from .models import Item
 from django.contrib.auth.decorators import login_required
 from .forms import ItemForm
-from .utils import get_period_dates, get_specific_month_dates
+import calendar
 from datetime import datetime
+from django.db.models.functions import ExtractYear
 from django.db.models import Sum
 from django.http import JsonResponse
 
@@ -41,34 +42,49 @@ def total_despesas_receitas(request):
 def Filtragem(request):
     usuario_logado = request.user
     base_queryset = Item.objects.filter(usuario=usuario_logado).order_by('data_transacao')
-    
-    view_filter = request.GET.get('view', 'meses')
-    period_filter = request.GET.get('filter_month')
+    base_queryset_ano = Item.objects.filter(usuario=request.user)
+
+    anos_disponiveis = (
+    base_queryset_ano
+    .annotate(ano=ExtractYear('data_transacao'))  
+    .values_list('ano', flat=True)                
+    .distinct()                                   
+    .order_by('-ano')                             
+    )
+
+    period_month = request.GET.get('filter_month')  
+    period_year = request.GET.get('filter_year')    
 
     data_inicio = None
     data_fim = None
 
-    if not period_filter or period_filter == 'todos':
-        itens_filtrados = base_queryset
-    else:
-        if period_filter:
-            data_inicio, data_fim = get_specific_month_dates(period_filter)
-        if data_inicio is None:
-            data_inicio, data_fim = get_period_dates(view_filter)
-        if data_inicio and data_fim:
-            itens_filtrados = base_queryset.filter(
-                data_transacao__gte=data_inicio, 
-                data_transacao__lte=data_fim
-            )
+    if period_year:
+        ano = int(period_year)
+
+        if period_month:
+            mes = int(period_month)
+            data_inicio = datetime(ano, mes, 1)
+            ultimo_dia = calendar.monthrange(ano, mes)[1]
+            data_fim = datetime(ano, mes, ultimo_dia)
         else:
-            itens_filtrados = base_queryset
-   
+            data_inicio = datetime(ano, 1, 1)
+            data_fim = datetime(ano, 12, 31)
+
+    if data_inicio and data_fim:
+        itens_filtrados = base_queryset.filter(
+            data_transacao__gte=data_inicio,
+            data_transacao__lte=data_fim
+        )
+    else:
+        itens_filtrados = base_queryset
 
     context = {
-        'itens': itens_filtrados,
-        'current_view': view_filter,
-        'current_period': 'todos' or period_filter,
+    'itens': itens_filtrados,
+    'current_month': period_month or "",
+    'current_year': period_year or "",
+    'anos_disponiveis': anos_disponiveis,
     }
+
     return render(request, 'finance/Receita_Despesas.html', context)
 
 

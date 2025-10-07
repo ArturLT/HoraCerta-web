@@ -58,24 +58,35 @@
                     </svg>
                     Período
                 </label>
-                <select name="filter_month" id="filter_month" class="filter-select">
-                    <option value="todos" {% if current_period == 'todos' %}selected{% endif %}>Todos os Meses</option>
-
-                    <option value="01-2025" {% if current_period == '01-2025' %}selected{% endif %}>Janeiro 2025</option>
-                    <option value="02-2025" {% if current_period == '02-2025' %}selected{% endif %}>Fevereiro 2025</option>
-                    <option value="03-2025" {% if current_period == '03-2025' %}selected{% endif %}>Março 2025</option>
-                    <option value="04-2025" {% if current_period == '04-2025' %}selected{% endif %}>Abril 2025</option>
-                    <option value="05-2025" {% if current_period == '05-2025' %}selected{% endif %}>Maio 2025</option>
-                    <option value="06-2025" {% if current_period == '06-2025' %}selected{% endif %}>Junho 2025</option>
-                    <option value="07-2025" {% if current_period == '07-2025' %}selected{% endif %}>Julho 2025</option>
-                    <option value="08-2025" {% if current_period == '08-2025' %}selected{% endif %}>Agosto 2025</option>
-                    <option value="09-2025" {% if current_period == '09-2025' %}selected{% endif %}>Setembro 2025</option>
-                    <option value="10-2025" {% if current_period == '10-2025' %}selected{% endif %}>Outubro 2025</option>
-                    <option value="11-2025" {% if current_period == '11-2025' %}selected{% endif %}>Novembro 2025</option>
-                    <option value="12-2025" {% if current_period == '12-2025' %}selected{% endif %}>Dezembro 2025</option>
-                </select>
+                 <select name="filter_month" id="filter_month" class="filter-select">
+                <option value="" {% if current_month == "" %}selected{% endif %}>Todos os Meses</option>
+                <option value="01" {% if current_month == "01" %}selected{% endif %}>Janeiro</option>
+                <option value="02" {% if current_month == "02" %}selected{% endif %}>Fevereiro</option>
+                <option value="03" {% if current_month == "03" %}selected{% endif %}>Março</option>
+                <option value="04" {% if current_month == "04" %}selected{% endif %}>Abril</option>
+                <option value="05" {% if current_month == "05" %}selected{% endif %}>Maio</option>
+                <option value="06" {% if current_month == "06" %}selected{% endif %}>Junho</option>
+                <option value="07" {% if current_month == "07" %}selected{% endif %}>Julho</option>
+                <option value="08" {% if current_month == "08" %}selected{% endif %}>Agosto</option>
+                <option value="09" {% if current_month == "09" %}selected{% endif %}>Setembro</option>
+                <option value="10" {% if current_month == "10" %}selected{% endif %}>Outubro</option>
+                <option value="11" {% if current_month == "11" %}selected{% endif %}>Novembro</option>
+                <option value="12" {% if current_month == "12" %}selected{% endif %}>Dezembro</option>
+            </select>
 
             </div>
+
+            <div class="filter-group">
+            <label for="filter_year">
+                Ano
+            </label>
+            <select name="filter_year" id="filter_year" class="filter-select">
+                <option value="" {% if current_year == "" %}selected{% endif %}>Todos os anos</option>
+                {% for ano in anos_disponiveis %}
+                    <option value="{{ ano }}" {% if current_year == ano|stringformat:"s" %}selected{% endif %}>{{ ano }}</option>
+                {% endfor %}
+            </select>
+        </div>
             <button type="submit" class="btn-filter">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>

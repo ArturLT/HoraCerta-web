@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if formulario.instance.pk %}Editar Item{% else %}Novo Item{% endif %}{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'items/css/aluguel_forms.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-container">
+          
+        <div class="form-header">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/>
+                    <path d="m3 9 2.45-4.9A2 2 0 0 1 7.24 3h9.52a2 2 0 0 1 1.8 1.1L21 9"/>
+                    <path d="M12 3v6"/>
+                </svg>
+            </div>
+            <h1>{% if formulario.instance.pk %}Editar Item Alugável{% else %}Novo Item Alugável{% endif %}</h1>
+            <p>Preencha as informações do item para aluguel</p>
+        </div>
+
+          
+        <form method="post" class="item-form" novalidate>
+            {% csrf_token %}
+            
+            {% if formulario.non_field_errors %}
+            <div class="form-errors">
+                {{ formulario.non_field_errors }}
+            </div>
+            {% endif %}
+
+            <div class="form-group {% if formulario.nome.errors %}has-error{% endif %}">
+                <label for="{{ formulario.nome.id_for_label }}" class="form-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                    </svg>
+                    {{ formulario.nome.label }}
+                </label>
+                <div class="input-wrapper">
+                    {{ formulario.nome }}
+                    {% if formulario.nome.errors %}
+                    <div class="error-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if formulario.nome.errors %}
+                <div class="error-message">{{ formulario.nome.errors.0 }}</div>
+                {% endif %}
+                {% if formulario.nome.help_text %}
+                <div class="help-text">{{ formulario.nome.help_text }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if formulario.quantidade_total.errors %}has-error{% endif %}">
+                <label for="{{ formulario.quantidade_total.id_for_label }}" class="form-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    {{ formulario.quantidade_total.label }}
+                </label>
+                <div class="input-wrapper">
+                    {{ formulario.quantidade_total }}
+                    {% if formulario.quantidade_total.errors %}
+                    <div class="error-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if formulario.quantidade_total.errors %}
+                <div class="error-message">{{ formulario.quantidade_total.errors.0 }}</div>
+                {% endif %}
+                {% if formulario.quantidade_total.help_text %}
+                <div class="help-text">{{ formulario.quantidade_total.help_text }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group {% if formulario.diaria.errors %}has-error{% endif %}">
+                <label for="{{ formulario.diaria.id_for_label }}" class="form-label">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"/>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                    </svg>
+                    {{ formulario.diaria.label }}
+                </label>
+                <div class="input-wrapper">
+                    <span class="currency-prefix">R$</span>
+                    {{ formulario.diaria }}
+                    {% if formulario.diaria.errors %}
+                    <div class="error-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if formulario.diaria.errors %}
+                <div class="error-message">{{ formulario.diaria.errors.0 }}</div>
+                {% endif %}
+                {% if formulario.diaria.help_text %}
+                <div class="help-text">{{ formulario.diaria.help_text }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <a href="{% url 'items:aluguel_list' %}" class="btn-cancel">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18M6 6l12 12"/>
+                    </svg>
+                    Cancelar
+                </a>
+                <button type="submit" class="btn-submit">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                    {% if formulario.instance.pk %}Atualizar Item{% else %}Criar Item{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
