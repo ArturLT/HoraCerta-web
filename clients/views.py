@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import ClienteForm
 from .models import Cliente
@@ -20,3 +20,21 @@ def criar_cliente(request):
     else:
         formulario = ClienteForm()
     return render(request, 'clients/cliente_form.html', {'formulario': formulario})
+
+@login_required
+def editar_cliente(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk, usuario=request.user)
+    if request.method == 'POST':
+        formulario = ClienteForm(request.POST, instance=cliente)
+        if formulario.is_valid():
+            formulario.save()
+            return redirect('clientes:cliente_list')
+    else:
+        formulario = ClienteForm(instance=cliente)
+    return render(request, 'clients/cliente_form.html', {'formulario': formulario})
+
+@login_required
+def cliente_delete(request, pk):
+    cliente = get_object_or_404(Cliente, pk=pk, usuario=request.user)
+    cliente.delete()
+    return redirect('clientes:cliente_list')
