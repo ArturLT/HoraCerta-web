@@ -7,6 +7,9 @@ from datetime import datetime
 from django.db.models.functions import ExtractYear
 from django.db.models import Sum
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.views.decorators.http import require_POST
 
 
 @login_required
@@ -134,3 +137,33 @@ def relario(request):
         'labels': labels[::-1]
     })
 
+@login_required
+@require_POST  # garante que só aceita POST
+def item_delete(request, pk):
+    # Pega o item ou retorna 404 se não existir ou não for do usuário
+    item = get_object_or_404(Item, pk=pk, usuario=request.user)
+    item.delete()
+    messages.success(request, "Item deletado com sucesso!")
+    return redirect('finance:finance_list')
+
+
+@login_required
+@require_POST
+def item_delete_ajax(request, pk):
+    item = get_object_or_404(Item, pk=pk, usuario=request.user)
+    item.delete()
+    return JsonResponse({'success': True, 'item_id': pk})
+
+@login_required
+def item_edit(request, pk):
+    item = get_object_or_404(Item, pk=pk, usuario=request.user)
+
+    if request.method == 'POST':
+        form = ItemForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('finance:finance_list')
+    else:
+        form = ItemForm(instance=item)
+
+    return render(request, 'finance/item_edit.html', {'form': form, 'item': item})
