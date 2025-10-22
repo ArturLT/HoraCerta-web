@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalhes do Aluguel #{{ aluguel.pk }}{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'itemAlugados/css/detalhe.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="aluguel-form-page">
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">Detalhes do Aluguel #{{ aluguel.pk }}</h1>
+            <p class="page-subtitle">Visualizando informações do aluguel para {{ aluguel.cliente.nome }}</p>
+        </div>
+        <div class="header-actions">
+            <a href="{% url 'items_alugados:editar_aluguel' pk=aluguel.pk %}" class="btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                Editar Aluguel
+            </a>
+            <a href="{% url 'items_alugados:listar_alugueis' %}" class="btn-secondary">
+                Voltar à Lista
+            </a>
+        </div>
+    </div>
+
+    <div class="main-form-section form-readonly">
+        <h2>Informações do Cliente e Período</h2>
+        <div class="form-grid">
+            {% for field in form %}
+                <div class="form-group">
+                    <label class="form-label">{{ field.label }}</label>
+                    <div class="input-wrapper">
+                        <p class="readonly-value">
+                            {% if field.name == "cliente" %}
+                                {{ aluguel.cliente.nome }}
+                            {% else %}
+                                {{ field.value }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="items-section">
+        <h2>Itens Alugados</h2>
+        
+        <div class="table-container">
+             <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantidade</th>
+                        <th>Valor Diária</th>
+                        <th>Subtotal Estimado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item_form in formset %}
+                    <tr>
+                        <td>{{ item_form.instance.item.nome }}</td>
+                        <td>{{ item_form.quantidade.value }}</td>
+                        <td>R$ {{ item_form.valor_diaria.value|floatformat:2 }}</td>
+                        <td>R$ {{ aluguel.total|floatformat:2 }}</td> 
+                    </tr>
+                    {% endfor %}
+                </tbody>
+             </table>
+        </div>
+
+        <div class="total-preview total-detail">
+            <strong>Total Geral Estimado:</strong> R$ {{ aluguel.total|floatformat:2 }}
+        </div>
+    </div>
+</div>
+{% endblock %}

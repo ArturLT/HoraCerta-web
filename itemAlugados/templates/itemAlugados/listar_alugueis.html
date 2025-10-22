@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lista de Aluguéis{% endblock %}
+
+{% block extra_style %}
+<link rel="stylesheet" href="{% static 'itemAlugados/css/listar_alugueis.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="alugueis-page">
+    <div class="page-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="page-title">Aluguéis</h1>
+                <p class="page-subtitle">Gerencie todos os aluguéis realizados</p>
+            </div>
+        </div>
+        <a href="{% url 'items_alugados:novo_aluguel' %}" class="btn-add">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Novo Aluguel
+        </a>
+    </div>
+
+    <div class="table-container">
+        {% if alugueis %}
+        <table class="alugueis-table">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th>Data Início</th>
+                    <th>Data Fim</th>
+                    <th>Valor Total</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for aluguel in alugueis %}
+                <tr>
+                    <td>
+                        <div class="cliente-info">
+                            <div class="cliente-avatar">{{ aluguel.cliente.nome|first|upper }}</div>
+                            <span>{{ aluguel.cliente.nome }}</span>
+                        </div>
+                    </td>
+                    <td>{{ aluguel.data_inicio|date:"d/m/Y" }}</td>
+                    <td>{{ aluguel.data_fim|date:"d/m/Y" }}</td>
+                    <td class="valor-total">R$ {{ aluguel.total|floatformat:2 }}</td>
+                    <td>
+                        <div class="action-buttons">
+
+                            <!-- Botão Visualizar -->
+                            <a href="{% url 'items_alugados:detalhe_aluguel' pk=aluguel.pk %}" 
+                               class="btn-action btn-view" title="Visualizar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </a>
+
+                            <!-- Botão Editar -->
+                            <a href="{% url 'items_alugados:editar_aluguel' pk=aluguel.pk %}" 
+                               class="btn-action btn-edit" title="Editar">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </a>
+
+                            <!-- Botão Excluir - agora aciona DELETE via AJAX sem modal -->
+                            <!-- data-delete-url aponta para a view de exclusão (deve aceitar POST ou DELETE) -->
+                            <button 
+                                type="button" 
+                                class="btn-action btn-delete" 
+                                title="Excluir"
+                                data-delete-url="{% url 'items_alugados:excluir_aluguel' pk=aluguel.pk %}"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                </svg>
+                            </button>
+
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+            <h3>Nenhum aluguel encontrado</h3>
+            <p>Comece criando seu primeiro aluguel</p>
+            <a href="{% url 'items_alugados:novo_aluguel' %}" class="btn-empty-action">
+                Criar Primeiro Aluguel
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Modal removido: exclusão agora é feita direto ao clicar no botão -->
+{% endblock %}
+
+{% block extra_scripts %}
+<!-- Bootstrap Bundle (com Popper) deve vir antes do JS personalizado -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'itemAlugados/js/excluir_aluguel_ajax.js' %}"></script>
+
+<!-- Script inline para exclusão sem modal -->
+<script>
+/* Função para ler CSRF token do cookie (padrão Django) */
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // cookie starts with name=
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+document.addEventListener('click', function(event) {
+    const btn = event.target.closest('.btn-delete');
+    if (!btn) return;
+
+    event.preventDefault();
+
+    const url = btn.dataset.deleteUrl;
+    if (!url) return;
+
+    // Desabilita botão para evitar múltiplos cliques
+    btn.disabled = true;
+
+    fetch(url, {
+        method: 'POST', // ajuste se sua view espera DELETE, coloque 'DELETE' e trate no backend
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        },
+        credentials: 'same-origin'
+    }).then(response => {
+        if (response.ok) {
+            // remove a linha da tabela para feedback imediato
+            const tr = btn.closest('tr');
+            if (tr) tr.remove();
+            return;
+        }
+        // tentar obter mensagem de erro
+        return response.json().then(data => {
+            throw new Error(data.error || 'Falha ao excluir');
+        }).catch(() => {
+            throw new Error('Falha ao excluir');
+        });
+    }).catch(err => {
+        alert('Erro ao excluir: ' + err.message);
+        btn.disabled = false;
+    });
+});
+</script>
+{% endblock %}

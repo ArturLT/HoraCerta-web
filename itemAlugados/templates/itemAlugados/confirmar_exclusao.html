@@ -1,0 +1,21 @@
+<div class="item-form-row">
+    <div class="item-form-grid">
+        {% for field in item_form %}
+            {% if field.name != 'DELETE' and field.name != 'id' and field.name != 'aluguel' %}
+            <div class="form-group {% if field.errors %}has-error{% endif %}">
+                <label for="{{ field.id_for_label }}" class="form-label">
+                    {{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}
+                </label>
+                <div class="input-wrapper">
+                    {{ field }}
+                </div>
+                {% for error in field.errors %}<span class="error-message">{{ error }}</span>{% endfor %}
+            </div>
+            {% else %}
+                {{ field }} {% endif %}
+        {% endfor %}
+    </div>
+    <button type="button" class="btn-remove-item" title="Remover item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+</div>
