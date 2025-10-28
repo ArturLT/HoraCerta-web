@@ -7,17 +7,16 @@
 <link rel="stylesheet" href="{% static 'finance/css/dashboard.css' %}">
 {% endblock %}
 
-{% block extra_scripts %}
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{% static 'finance/js/charts.js' %}"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        renderiza_despesas_mensal("{% url 'finance:relatorio' %}");
-    });
-</script>
-{% endblock %}
+
 
 {% block content %}
+<!-- Div que armazena as URLs para os gráficos -->
+<div id="chart-data"
+     data-relatorio-url="{% url 'finance:relatorio' %}"
+     data-top4-receitas-url="{% url 'finance:top4_receitas' %}"
+     data-top4-despesas-url="{% url 'finance:top4_despesas' %}">
+</div>
+
 <div class="dashboard-container">
     <div class="dashboard-header">
         <h2>Resumo Financeiro</h2>
@@ -66,34 +65,9 @@
             <p class="value">R$ {{ saldo|floatformat:2 }}</p>
             <span class="period-label">Período Atual</span>
         </div>
-
-        <!-- Placeholder para Item Mais Alugado -->
-        <div class="summary-card placeholder item-alugado">
-            <div class="card-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-                    <polyline points="9 22 9 12 15 12 15 22"/>
-                </svg>
-            </div>
-            <h4>Item Mais Alugado</h4>
-            <p class="value">--</p>
-            <span class="period-label">Em breve</span>
-        </div>
-
-        <!-- Placeholder para Histórico de Saldo -->
-        <div class="summary-card placeholder historico-saldo">
-            <div class="card-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                </svg>
-            </div>
-            <h4>Histórico Mensal</h4>
-            <p class="value">--</p>
-            <span class="period-label">Em breve</span>
-        </div>
     </section>
 
-    <!-- Gráfico de Transações -->
+    <!-- Gráfico de Linha -->
     <section class="chart-section">
         <div class="chart-header">
             <h3>Receitas vs Despesas</h3>
@@ -103,5 +77,40 @@
             <canvas id="faturamento"></canvas>
         </div>
     </section>
+
+    <!-- Gráficos de Pizza -->
+    <section class="chart-section flex-charts">
+        <div class="chart-wrapper">
+            <h3>Top 4 Receitas</h3>
+            <canvas id="receitasTop"></canvas>
+        </div>
+
+        <div class="chart-wrapper">
+            <h3>Top 4 Despesas</h3>
+            <canvas id="despesasTop"></canvas>
+        </div>
+    </section>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const urls = {
+        relatorio: "{% url 'finance:relatorio' %}",
+        top4_receitas: "{% url 'finance:top4_receitas' %}",
+        top4_despesas: "{% url 'finance:top4_despesas' %}",
+    };
+</script>
+
+<script src="{% static 'finance/js/charts.js' %}"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        renderiza_despesas_mensal(urls.relatorio);
+        renderiza_top4_receitas(urls.top4_receitas);
+        renderiza_top4_despesas(urls.top4_despesas);
+    });
+</script>
 {% endblock %}

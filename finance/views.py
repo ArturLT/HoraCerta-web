@@ -107,7 +107,7 @@ def item_create(request):
     return render(request, 'finance/item_create.html', {'form': form})
 
 @login_required
-def relario(request):
+def relatorio(request):
     usuario = request.user
     receitas = Item.objects.filter(tipo='receita', usuario=usuario)
     despesas = Item.objects.filter(tipo='despesa', usuario=usuario)
@@ -167,3 +167,35 @@ def item_edit(request, pk):
         form = ItemForm(instance=item)
 
     return render(request, 'finance/item_edit.html', {'form': form, 'item': item})
+
+
+@login_required
+def top4_receitas(request):
+    usuario = request.user
+    receitas = (
+        Item.objects.filter(usuario=usuario, tipo='receita')
+        .values('descricao')
+        .annotate(total=Sum('valor'))
+        .order_by('-total')[:4]
+    )
+
+    labels = [r['descricao'] for r in receitas]
+    values = [float(r['total']) for r in receitas]
+
+    return JsonResponse({'labels': labels, 'values': values})
+
+
+@login_required
+def top4_despesas(request):
+    usuario = request.user
+    despesas = (
+        Item.objects.filter(usuario=usuario, tipo='despesa')
+        .values('descricao')
+        .annotate(total=Sum('valor'))
+        .order_by('-total')[:4]
+    )
+
+    labels = [d['descricao'] for d in despesas]
+    values = [float(d['total']) for d in despesas]
+
+    return JsonResponse({'labels': labels, 'values': values})
