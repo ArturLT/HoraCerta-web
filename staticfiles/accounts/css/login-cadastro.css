@@ -1,0 +1,115 @@
+/* Modern Form Styles for Login and Cadastro */
+
+/* Form Group Modern */
+.form-group-modern {
+  margin-bottom: 1.25rem;
+}
+
+/* Input Modern */
+.input-modern {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background-color: #ffffff;
+}
+
+.input-modern:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-modern::placeholder {
+  color: #9ca3af;
+}
+
+/* Submit Button Modern */
+.btn-submit-modern {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 1.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+  color: white;
+  font-weight: 600;
+  font-size: 0.9375rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+  margin-top: 1.5rem;
+}
+
+.btn-submit-modern:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.4);
+  transform: translateY(-1px);
+}
+
+.btn-submit-modern:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+}
+
+/* Validation States */
+.input-modern:invalid:not(:placeholder-shown) {
+  border-color: #ef4444;
+}
+
+.input-modern:valid:not(:placeholder-shown) {
+  border-color: #10b981;
+}
+
+/* Focus visible for accessibility */
+.input-modern:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .input-modern {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* Loading state for button */
+.btn-submit-modern:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Animation for form appearance */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-group-modern {
+  animation: fadeInUp 0.4s ease-out backwards;
+}
+
+.form-group-modern:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.form-group-modern:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.form-group-modern:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.form-group-modern:nth-child(4) {
+  animation-delay: 0.4s;
+}

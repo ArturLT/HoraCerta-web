@@ -30,7 +30,7 @@ def cadastro(request):
 
         user = User.objects.create_user(nome=nome, email=email, senha=senha, nome_empresa=nome_empresa)
         
-        return render(request, 'accounts/login.html')
+        return render(request, 'finance/dashboard.html')
     
 
 def login(request):
@@ -42,7 +42,7 @@ def login(request):
         
         if usuario is not None:
             django_login(request, usuario)
-            return redirect(reverse('finance:finance_list'))
+            return redirect(reverse('finance:Dashboard'))
         else:
             return HttpResponse("Usuário ou senha inválidos.")
     else:

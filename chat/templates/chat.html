@@ -1,0 +1,34 @@
+<div id="chatbot-container" style="
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  height: 420px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: white;
+  display: none;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  font-family: Arial, sans-serif;
+">
+  <div id="chatbot-header" style="background: #007bff; color: white; padding: 10px; border-radius: 10px 10px 0 0; cursor: pointer;">
+    Chat de Ajuda 💬
+  </div>
+
+  <div id="chatbot-body" style="flex: 1; padding: 10px; overflow-y: auto; word-wrap: break-word;"></div>
+
+  <div style="display: flex; border-top: 1px solid #ddd;">
+    <input id="chatbot-input" type="text" placeholder="Digite sua pergunta..." style="flex:1; border: none; padding: 10px;">
+    <button id="chatbot-send" style="background:#007bff;color:white;border:none;padding:10px 15px;cursor:pointer;">Enviar</button>
+  </div>
+</div>
+
+<button id="open-chatbot" style="
+  position: fixed; bottom: 20px; right: 20px;
+  background: #007bff; color: white; border: none;
+  border-radius: 50%; width: 50px; height: 50px;
+  font-size: 20px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+">💬</button>
+
+<script src="{% static 'chat/js/chatbot.js' %}"></script>

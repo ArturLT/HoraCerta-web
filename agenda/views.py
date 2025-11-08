@@ -22,7 +22,7 @@ def criar_agenda(request):
             agenda = form.save(commit=False)
             agenda.usuario = request.user
             agenda.save()
-            return redirect('agenda:agenda_list')
+            return redirect('agenda:agenda_calendario')
     else:
         form = AgendaForm(initial=initial_data)
 
