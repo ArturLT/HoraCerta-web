@@ -15,16 +15,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 🔐 CONFIGURAÇÕES DE SEGURANÇA
 # ==============================
 # OBTEM A SECRET KEY DAS VARIÁVEIS DE AMBIENTE. É CRÍTICO!
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+# OBTEM A SECRET KEY DO NOME DA VARIÁVEL DE AMBIENTE.
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') 
 
-# Se a chave secreta não estiver definida, a aplicação NÃO DEVE rodar por segurança.
-if not SECRET_KEY:
-    raise Exception("DJANGO_SECRET_KEY não definida. Defina nas Variáveis de Ambiente do Render.")
-
-
-# DEBUG: True para local, False para produção. Lida com a Env 'DEBUG'.
-# NO RENDER, defina a Env 'DEBUG' como False.
+# DEBUG: True para local, False para produção.
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+
+# Se a chave secreta não estiver definida E DEBUG for False, falhe (Produção).
+if not SECRET_KEY and not DEBUG:
+    raise Exception("SECRET_KEY não definida em ambiente de produção (DEBUG=False).")
+
+# Se a chave secreta não estiver definida E DEBUG for True, use uma chave de desenvolvimento.
+elif not SECRET_KEY and DEBUG:
+    # Apenas para desenvolvimento local. NÃO USE ESTE VALOR EM PRODUÇÃO!
+    SECRET_KEY = 'django-insecure-chave-de-desenvolvimento-local'
 
 # ALLOWED_HOSTS
 # Em produção, ele permite requisições do seu domínio no Render.
