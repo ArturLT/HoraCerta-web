@@ -5,33 +5,37 @@ Django settings for horacerta project.
 from pathlib import Path
 import os
 
+# ==============================
+# 🔹 BASE DIR
+# ==============================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ==============================
-# 🔐 Configurações de Segurança
+# 🔐 CONFIGURAÇÕES DE SEGURANÇA
 # ==============================
+SECRET_KEY = os.getenv(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-3#x0in(s%3(4nuq*y(f^rdo0665(k+^pyy*ex6c57hgl6v$awz'
+)
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-3#x0in(s%3(4nuq*y(f^rdo0665(k+^pyy*ex6c57hgl6v$awz')
-
-# DEBUG = True (local) / False (produção)
+# DEBUG True para desenvolvimento local, False para produção
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Em produção, defina no Fly.io a variável de ambiente:
-# fly secrets set DEBUG=False
 ALLOWED_HOSTS = [
-    "horacerta-web.onrender.com",
     "127.0.0.1",
     "localhost",
+    "horacerta-web.onrender.com",
 ]
 
+# Configuração de CSRF para produção
 CSRF_TRUSTED_ORIGINS = [
     "https://horacerta-web.onrender.com",
+    "https://*.onrender.com",
 ]
 
 # ==============================
-# 📦 Aplicações
+# 📦 INSTALLED APPS
 # ==============================
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,12 +55,11 @@ INSTALLED_APPS = [
 ]
 
 # ==============================
-# ⚙️ Middleware
+# ⚙️ MIDDLEWARE
 # ==============================
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # necessário para servir estáticos no Fly.io
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve arquivos estáticos
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -65,15 +68,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Serve arquivos estáticos com cache e compressão
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
+# ==============================
+# URLS E WSGI
+# ==============================
 ROOT_URLCONF = 'horacerta.urls'
+WSGI_APPLICATION = 'horacerta.wsgi.application'
 
 # ==============================
-# 🧩 Templates
+# 🧩 TEMPLATES
 # ==============================
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -89,12 +92,9 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'horacerta.wsgi.application'
-
 # ==============================
-# 💾 Banco de Dados
+# 💾 DATABASES
 # ==============================
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -103,9 +103,8 @@ DATABASES = {
 }
 
 # ==============================
-# 🔑 Autenticação
+# 🔑 AUTENTICAÇÃO
 # ==============================
-
 AUTHENTICATION_BACKENDS = [
     'accounts.backends.EmailOrNomeBackend',
     'django.contrib.auth.backends.ModelBackend',
@@ -114,26 +113,27 @@ AUTHENTICATION_BACKENDS = [
 AUTH_USER_MODEL = 'accounts.User'
 
 # ==============================
-# 🌍 Internacionalização
+# 🌍 INTERNACIONALIZAÇÃO
 # ==============================
-
 LANGUAGE_CODE = 'pt-br'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 USE_I18N = True
 USE_TZ = True
 
 # ==============================
-# 🖼️ Arquivos Estáticos
+# 🖼️ ARQUIVOS ESTÁTICOS
 # ==============================
-
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# ==============================
-# 🆔 Campo padrão de chave primária
-# ==============================
+# Usa WhiteNoise apenas em produção
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+# ==============================
+# 🆔 CAMPO PADRÃO DE CHAVE PRIMÁRIA
+# ==============================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
