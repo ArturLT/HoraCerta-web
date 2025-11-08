@@ -19,7 +19,7 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 # Em produção, defina no Fly.io a variável de ambiente:
 # fly secrets set DEBUG=False
 ALLOWED_HOSTS = [
-    "hora-certa-cold-firefly-5751.fly.dev",
+    "*",
     "127.0.0.1",
     "localhost",
 ]
