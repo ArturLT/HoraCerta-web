@@ -19,13 +19,13 @@ DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 # Em produção, defina no Fly.io a variável de ambiente:
 # fly secrets set DEBUG=False
 ALLOWED_HOSTS = [
-    "*",
+    "horacerta-web.onrender.com",
     "127.0.0.1",
     "localhost",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://hora-certa-cold-firefly-5751.fly.dev",
+    "https://horacerta-web.onrender.com",
 ]
 
 # ==============================
