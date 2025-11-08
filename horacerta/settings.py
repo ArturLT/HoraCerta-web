@@ -4,6 +4,7 @@ Django settings for horacerta project.
 
 from pathlib import Path
 import os
+import dj_database_url # Usado para parsear a DATABASE_URL do Render
 
 # ==============================
 # 🔹 BASE DIR
@@ -13,21 +14,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================
 # 🔐 CONFIGURAÇÕES DE SEGURANÇA
 # ==============================
-SECRET_KEY = os.getenv(
-    'DJANGO_SECRET_KEY',
-    'django-insecure-3#x0in(s%3(4nuq*y(f^rdo0665(k+^pyy*ex6c57hgl6v$awz'
-)
+# OBTEM A SECRET KEY DAS VARIÁVEIS DE AMBIENTE. É CRÍTICO!
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-# DEBUG True para desenvolvimento local, False para produção
+# Se a chave secreta não estiver definida, a aplicação NÃO DEVE rodar por segurança.
+if not SECRET_KEY:
+    raise Exception("DJANGO_SECRET_KEY não definida. Defina nas Variáveis de Ambiente do Render.")
+
+
+# DEBUG: True para local, False para produção. Lida com a Env 'DEBUG'.
+# NO RENDER, defina a Env 'DEBUG' como False.
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
+# ALLOWED_HOSTS
+# Em produção, ele permite requisições do seu domínio no Render.
 ALLOWED_HOSTS = [
     "127.0.0.1",
     "localhost",
     "horacerta-web.onrender.com",
 ]
 
-# Configuração de CSRF para produção
+# Configuração de CSRF para produção no Render
 CSRF_TRUSTED_ORIGINS = [
     "https://horacerta-web.onrender.com",
     "https://*.onrender.com",
@@ -59,7 +66,8 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve arquivos estáticos
+    # Middleware para servir estáticos em produção
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -93,14 +101,25 @@ TEMPLATES = [
 ]
 
 # ==============================
-# 💾 DATABASES
+# 💾 DATABASES - **CRÍTICO PARA O RENDER**
 # ==============================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Verifica se a DATABASE_URL está definida (Ambiente de Produção/Render)
+if os.getenv("DATABASE_URL"):
+    # Usa dj_database_url para configurar o PostgreSQL
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600  # Opcional: tempo de vida máximo da conexão
+        )
     }
-}
+else:
+    # Configuração de fallback para desenvolvimento local (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # ==============================
 # 🔑 AUTENTICAÇÃO
@@ -129,7 +148,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Usa WhiteNoise apenas em produção
+# Usa WhiteNoise apenas em produção (quando DEBUG é False)
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
