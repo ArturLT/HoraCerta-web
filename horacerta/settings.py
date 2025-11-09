@@ -1,10 +1,11 @@
 """
-Django settings for horacerta project.
+Django settings para horacerta - pronto para Render
 """
 
 from pathlib import Path
 import os
-import dj_database_url # Usado para parsear a DATABASE_URL do Render
+import dj_database_url  # Para parsear DATABASE_URL do Render
+import sys
 
 # ==============================
 # 🔹 BASE DIR
@@ -14,35 +15,31 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================
 # 🔐 CONFIGURAÇÕES DE SEGURANÇA
 # ==============================
-# OBTEM A SECRET KEY DAS VARIÁVEIS DE AMBIENTE. É CRÍTICO!
-# OBTEM A SECRET KEY DO NOME DA VARIÁVEL DE AMBIENTE.
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY') 
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
-# DEBUG: True para local, False para produção.
+# DEBUG: True para desenvolvimento local, False para produção
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Se a chave secreta não estiver definida E DEBUG for False, falhe (Produção).
+# Segurança: falha se SECRET_KEY não estiver definida em produção
 if not SECRET_KEY and not DEBUG:
     raise Exception("SECRET_KEY não definida em ambiente de produção (DEBUG=False).")
 
-# Se a chave secreta não estiver definida E DEBUG for True, use uma chave de desenvolvimento.
+# Se não tiver SECRET_KEY e estiver em DEBUG, usa chave de desenvolvimento
 elif not SECRET_KEY and DEBUG:
-    # Apenas para desenvolvimento local. NÃO USE ESTE VALOR EM PRODUÇÃO!
     SECRET_KEY = 'django-insecure-chave-de-desenvolvimento-local'
 
-# ALLOWED_HOSTS
-# Em produção, ele permite requisições do seu domínio no Render.
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost",
-    "horacerta-web.onrender.com",
-]
+# ==============================
+# 🌐 HOSTS E CSRF
+# ==============================
+ALLOWED_HOSTS = os.getenv(
+    "ALLOWED_HOSTS",
+    "127.0.0.1,localhost,horacerta-web.onrender.com"
+).split(",")
 
-# Configuração de CSRF para produção no Render
-CSRF_TRUSTED_ORIGINS = [
-    "https://horacerta-web.onrender.com",
-    "https://*.onrender.com",
-]
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://horacerta-web.onrender.com,https://*.onrender.com"
+).split(",")
 
 # ==============================
 # 📦 INSTALLED APPS
@@ -70,8 +67,7 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    # Middleware para servir estáticos em produção
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Deve vir antes do SessionMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -105,25 +101,26 @@ TEMPLATES = [
 ]
 
 # ==============================
-# 💾 DATABASES - **CRÍTICO PARA O RENDER**
+# 💾 DATABASES - Produção / Render
 # ==============================
-# Verifica se a DATABASE_URL está definida (Ambiente de Produção/Render)
-if os.getenv("DATABASE_URL"):
-    # Usa dj_database_url para configurar o PostgreSQL
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    # Usa dj_database_url para PostgreSQL remoto
     DATABASES = {
-        'default': dj_database_url.config(
-            default=os.environ.get('DATABASE_URL'),
-            conn_max_age=600  # Opcional: tempo de vida máximo da conexão
-        )
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
 else:
-    # Configuração de fallback para desenvolvimento local (SQLite)
+    # Fallback local (SQLite)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
+
+# DEBUG temporário para verificar problemas de DB no Render
+if 'runserver' not in sys.argv:  # Somente para deploy
+    print("DATABASES CONFIG:", DATABASES)
 
 # ==============================
 # 🔑 AUTENTICAÇÃO
@@ -152,11 +149,24 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# Usa WhiteNoise apenas em produção (quando DEBUG é False)
+# WhiteNoise em produção
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ==============================
-# 🆔 CAMPO PADRÃO DE CHAVE PRIMÁRIA
+# 🆔 CHAVE PRIMÁRIA PADRÃO
 # ==============================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ==============================
+# ⚠️ LOGGING TEMPORÁRIO PARA ERRO 500
+# ==============================
+if not DEBUG:
+    import logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s %(asctime)s %(message)s",
+    )
+    logging.info("Django rodando em produção. DEBUG=False")
+    logging.info(f"ALLOWED_HOSTS={ALLOWED_HOSTS}")
+    logging.info(f"CSRF_TRUSTED_ORIGINS={CSRF_TRUSTED_ORIGINS}")
