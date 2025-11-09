@@ -1,10 +1,10 @@
 """
-Django settings para horacerta - pronto para Render
+Django settings para horacerta - pronto para Railway
 """
 
 from pathlib import Path
 import os
-import dj_database_url  # Para parsear DATABASE_URL do Render
+import dj_database_url  # Para parsear DATABASE_URL do Railway
 import sys
 
 # ==============================
@@ -20,7 +20,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 # DEBUG: True para desenvolvimento local, False para produção
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Segurança: falha se SECRET_KEY não estiver definida em produção
+# Falha se SECRET_KEY não estiver definida em produção
 if not SECRET_KEY and not DEBUG:
     raise Exception("SECRET_KEY não definida em ambiente de produção (DEBUG=False).")
 
@@ -101,11 +101,10 @@ TEMPLATES = [
 ]
 
 # ==============================
-# 💾 DATABASES - Produção / Render
+# 💾 DATABASES - Produção / Railway
 # ==============================
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
-    # Usa dj_database_url para PostgreSQL remoto
     DATABASES = {
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
@@ -118,7 +117,7 @@ else:
         }
     }
 
-# DEBUG temporário para verificar problemas de DB no Render
+# DEBUG temporário para verificar problemas de DB
 if 'runserver' not in sys.argv:  # Somente para deploy
     print("DATABASES CONFIG:", DATABASES)
 
