@@ -31,9 +31,7 @@ elif not SECRET_KEY and DEBUG:
 # ==============================
 # 🌐 HOSTS E CSRF
 # ==============================
-ALLOWED_HOSTS = [
-    "horacerta-web-production.up.railway.app",
-]
+ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     "https://horacerta-web-production.up.railway.app",
@@ -102,19 +100,12 @@ TEMPLATES = [
 # ==============================
 # 💾 DATABASES - Produção / Railway
 # ==============================
-DATABASE_URL = os.getenv("DATABASE_URL")
-if DATABASE_URL:
-    DATABASES = {
-        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
-else:
-    # Fallback local (SQLite)
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
+DATABASES = {
+    'default': dj_database_url.config(
+        default='postgresql://postgres:UKjUuIzgPwtETDpjLiaESMDPRWwzDjPy@postgres.railway.internal:5432/railway' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        conn_max_age=600
+    )
+}
 
 # DEBUG temporário para verificar problemas de DB
 if 'runserver' not in sys.argv:  # Somente para deploy
