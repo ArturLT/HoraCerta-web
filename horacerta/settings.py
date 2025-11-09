@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================
 # 🔐 CONFIGURAÇÕES DE SEGURANÇA
 # ==============================
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = '!!7#s1d5dj9fhlk^v6wyx81p2e@@o2#d0_zn(u^1j*=&^$r=ri'
 
 # DEBUG: True para desenvolvimento local, False para produção
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
