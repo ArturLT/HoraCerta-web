@@ -1,11 +1,12 @@
 """
-Django settings para horacerta - pronto para Railway
+Django settings para horacerta - pronto para deploy no Railway
 """
 
 from pathlib import Path
 import os
-import dj_database_url
 import sys
+import dj_database_url
+import logging
 
 # ==============================
 # 🔹 BASE DIR
@@ -13,16 +14,10 @@ import sys
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ==============================
-# 🔐 CONFIGURAÇÕES DE SEGURANÇA
+# 🔐 SEGURANÇA
 # ==============================
-SECRET_KEY = '!!7#s1d5dj9fhlk^v6wyx81p2e@@o2#d0_zn(u^1j*=&^$r=ri'
-
-# Em produção, mantenha DEBUG = False
-DEBUG = False
-
-# Falha se SECRET_KEY não estiver definida em produção
-if not SECRET_KEY and not DEBUG:
-    raise Exception("SECRET_KEY não definida em ambiente de produção (DEBUG=False).")
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', '!!7#s1d5dj9fhlk^v6wyx81p2e@@o2#d0_zn(u^1j*=&^$r=ri')
+DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
 
 # ==============================
 # 🌐 HOSTS E CSRF
@@ -34,7 +29,7 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 # ==============================
-# 📦 INSTALLED APPS
+# 📦 APLICATIVOS INSTALADOS
 # ==============================
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -59,7 +54,7 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Deve vir antes do SessionMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve arquivos estáticos em produção
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -69,7 +64,7 @@ MIDDLEWARE = [
 ]
 
 # ==============================
-# URLS E WSGI
+# 🔗 URLs e WSGI
 # ==============================
 ROOT_URLCONF = 'horacerta.urls'
 WSGI_APPLICATION = 'horacerta.wsgi.application'
@@ -84,6 +79,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -93,7 +89,7 @@ TEMPLATES = [
 ]
 
 # ==============================
-# 💾 DATABASES - Produção / Railway
+# 💾 BANCO DE DADOS (Railway)
 # ==============================
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -102,17 +98,12 @@ if DATABASE_URL:
         'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
 else:
-    # Fallback local (SQLite)
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-
-# DEBUG temporário para verificar problemas de DB
-if 'runserver' not in sys.argv:  # Somente para deploy
-    print("DATABASES CONFIG:", DATABASES)
 
 # ==============================
 # 🔑 AUTENTICAÇÃO
@@ -137,28 +128,34 @@ USE_TZ = True
 # ==============================
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# WhiteNoise em produção
+# WhiteNoise - produção
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # ==============================
-# 🆔 CHAVE PRIMÁRIA PADRÃO
+# 🆔 PADRÃO PRIMARY KEY
 # ==============================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================
-# ⚠️ LOGGING TEMPORÁRIO PARA ERRO 500
+# ⚠️ LOGGING (debug em produção)
 # ==============================
 if not DEBUG:
-    import logging
     logging.basicConfig(
         level=logging.INFO,
         format="%(levelname)s %(asctime)s %(message)s",
     )
-    logging.info("Django rodando em produção. DEBUG=False")
+    logging.info("🚀 Django rodando em produção (DEBUG=False)")
     logging.info(f"ALLOWED_HOSTS={ALLOWED_HOSTS}")
     logging.info(f"CSRF_TRUSTED_ORIGINS={CSRF_TRUSTED_ORIGINS}")
+
+# ==============================
+# 🧹 COLETA AUTOMÁTICA DE STATICFILES (Railway)
+# ==============================
+if 'collectstatic' in sys.argv:
+    print("👉 Coletando arquivos estáticos...")
