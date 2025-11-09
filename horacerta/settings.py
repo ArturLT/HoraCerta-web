@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '!!7#s1d5dj9fhlk^v6wyx81p2e@@o2#d0_zn(u^1j*=&^$r=ri'
 
 # DEBUG: True para desenvolvimento local, False para produção
-DEBUG = os.getenv("DEBUG", "False").lower() == "true"
+DEBUG = False
 
 # Falha se SECRET_KEY não estiver definida em produção
 if not SECRET_KEY and not DEBUG:
