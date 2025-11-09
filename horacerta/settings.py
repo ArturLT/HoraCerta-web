@@ -4,7 +4,7 @@ Django settings para horacerta - pronto para Railway
 
 from pathlib import Path
 import os
-import dj_database_url  # Para parsear DATABASE_URL do Railway
+import dj_database_url
 import sys
 
 # ==============================
@@ -17,16 +17,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ==============================
 SECRET_KEY = '!!7#s1d5dj9fhlk^v6wyx81p2e@@o2#d0_zn(u^1j*=&^$r=ri'
 
-# DEBUG: True para desenvolvimento local, False para produção
+# Em produção, mantenha DEBUG = False
 DEBUG = False
 
 # Falha se SECRET_KEY não estiver definida em produção
 if not SECRET_KEY and not DEBUG:
     raise Exception("SECRET_KEY não definida em ambiente de produção (DEBUG=False).")
-
-# Se não tiver SECRET_KEY e estiver em DEBUG, usa chave de desenvolvimento
-elif not SECRET_KEY and DEBUG:
-    SECRET_KEY = 'django-insecure-chave-de-desenvolvimento-local'
 
 # ==============================
 # 🌐 HOSTS E CSRF
@@ -36,7 +32,6 @@ ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
     "https://horacerta-web-production.up.railway.app",
 ]
-
 
 # ==============================
 # 📦 INSTALLED APPS
@@ -100,12 +95,20 @@ TEMPLATES = [
 # ==============================
 # 💾 DATABASES - Produção / Railway
 # ==============================
-DATABASES = {
-    'default': dj_database_url.config(
-        default='postgresql://postgres:UKjUuIzgPwtETDpjLiaESMDPRWwzDjPy@trolley.proxy.rlwy.net:44112/railway' + os.path.join(BASE_DIR, 'db.sqlite3'),
-        conn_max_age=600
-    )
-}
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
+    }
+else:
+    # Fallback local (SQLite)
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # DEBUG temporário para verificar problemas de DB
 if 'runserver' not in sys.argv:  # Somente para deploy
