@@ -102,7 +102,7 @@ TEMPLATES = [
 # ==============================
 DATABASES = {
     'default': dj_database_url.config(
-        default='postgresql://postgres:UKjUuIzgPwtETDpjLiaESMDPRWwzDjPy@postgres.railway.internal:5432/railway' + os.path.join(BASE_DIR, 'db.sqlite3'),
+        default='postgresql://postgres:UKjUuIzgPwtETDpjLiaESMDPRWwzDjPy@trolley.proxy.rlwy.net:44112/railway' + os.path.join(BASE_DIR, 'db.sqlite3'),
         conn_max_age=600
     )
 }
