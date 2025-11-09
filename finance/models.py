@@ -10,7 +10,7 @@ class Item(models.Model):
 
     usuario = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
 
-    valor = models.DecimalField(max_digits=1000000, decimal_places=2)
+    valor = models.DecimalField(max_digits=100, decimal_places=2)
     data_transacao = models.DateField(default=date.today) 
     recorrente = models.BooleanField(default=False)
     
