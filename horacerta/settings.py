@@ -31,15 +31,14 @@ elif not SECRET_KEY and DEBUG:
 # ==============================
 # 🌐 HOSTS E CSRF
 # ==============================
-ALLOWED_HOSTS = os.getenv(
-    "ALLOWED_HOSTS",
-    "127.0.0.1,localhost,horacerta-web.onrender.com"
-).split(",")
+ALLOWED_HOSTS = [
+    "horacerta-web-production.up.railway.app",
+]
 
-CSRF_TRUSTED_ORIGINS = os.getenv(
-    "CSRF_TRUSTED_ORIGINS",
-    "https://horacerta-web.onrender.com,https://*.onrender.com"
-).split(",")
+CSRF_TRUSTED_ORIGINS = [
+    "https://horacerta-web-production.up.railway.app",
+]
+
 
 # ==============================
 # 📦 INSTALLED APPS
