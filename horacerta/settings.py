@@ -1,5 +1,5 @@
 """
-Django settings para horacerta - pronto para deploy no Railway
+Django settings para o projeto HoraCerta — pronto para deploy no Railway 🚀
 """
 
 from pathlib import Path
@@ -9,7 +9,7 @@ import dj_database_url
 import logging
 
 # ==============================
-# 🔹 BASE DIR
+# 📁 DIRETÓRIOS BASE
 # ==============================
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -28,10 +28,16 @@ CSRF_TRUSTED_ORIGINS = [
     "https://horacerta-web-production.up.railway.app",
 ]
 
+# Segurança extra em produção
+if not DEBUG:
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+
 # ==============================
 # 📦 APLICATIVOS INSTALADOS
 # ==============================
 INSTALLED_APPS = [
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +60,7 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # serve arquivos estáticos em produção
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve arquivos estáticos no deploy
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -64,7 +70,7 @@ MIDDLEWARE = [
 ]
 
 # ==============================
-# 🔗 URLs e WSGI
+# 🔗 URLs E WSGI
 # ==============================
 ROOT_URLCONF = 'horacerta.urls'
 WSGI_APPLICATION = 'horacerta.wsgi.application'
@@ -89,7 +95,7 @@ TEMPLATES = [
 ]
 
 # ==============================
-# 💾 BANCO DE DADOS (Railway)
+# 💾 BANCO DE DADOS (Railway ou SQLite local)
 # ==============================
 DATABASE_URL = os.getenv("DATABASE_URL")
 
@@ -109,11 +115,20 @@ else:
 # 🔑 AUTENTICAÇÃO
 # ==============================
 AUTHENTICATION_BACKENDS = [
-    'accounts.backends.EmailOrNomeBackend',
+    'accounts.backends.EmailOrNomeBackend',  # Login por e-mail ou nome
     'django.contrib.auth.backends.ModelBackend',
 ]
 
 AUTH_USER_MODEL = 'accounts.User'
+
+# ==============================
+# 📧 E-MAIL (Ajuste automático)
+# ==============================
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "no-reply@horacerta.com")
+EMAIL_BACKEND = (
+    "django.core.mail.backends.console.EmailBackend" if DEBUG
+    else "django.core.mail.backends.smtp.EmailBackend"
+)
 
 # ==============================
 # 🌍 INTERNACIONALIZAÇÃO
@@ -133,17 +148,18 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-# WhiteNoise - produção
 if not DEBUG:
     STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+else:
+    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 # ==============================
-# 🆔 PADRÃO PRIMARY KEY
+# 🆔 CONFIGURAÇÕES PADRÃO
 # ==============================
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ==============================
-# ⚠️ LOGGING (debug em produção)
+# ⚠️ LOGGING (para debug em produção)
 # ==============================
 if not DEBUG:
     logging.basicConfig(
@@ -158,4 +174,4 @@ if not DEBUG:
 # 🧹 COLETA AUTOMÁTICA DE STATICFILES (Railway)
 # ==============================
 if 'collectstatic' in sys.argv:
-    print("👉 Coletando arquivos estáticos...")
+    print("👉 Coletando arquivos estáticos para deploy...")
