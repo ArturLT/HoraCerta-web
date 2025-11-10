@@ -28,7 +28,7 @@ def Dashboard(request):
         'despesas': total_despesas, 
         'saldo': saldo,
     }
-    return render(request, 'finance/Dashboard.html', context)
+    return render(request, 'finance/dashboard.html', context)
 
 @login_required
 def total_despesas_receitas(request):
